@@ -20,6 +20,9 @@ use crate::{
     command, flag, lut, Color, Result, TriColor,
 };
 
+/// Display driver for the WeAct Studio 4.2 inch B/W display.
+pub type WeActStudio420BlackWhiteDriver<DI, BSY, RST, DELAY> =
+    DisplayDriver<DI, BSY, RST, DELAY, 400, 400, 300, Color>;
 /// Display driver for the WeAct Studio 2.9 inch B/W display.
 pub type WeActStudio290BlackWhiteDriver<DI, BSY, RST, DELAY> =
     DisplayDriver<DI, BSY, RST, DELAY, 128, 128, 296, Color>;
@@ -221,7 +224,7 @@ where
     }
 
     /// Put the device into deep-sleep mode.
-    /// You will need to call [`Self::wake_up`] before you can draw to the screen again.
+    /// You will need to call wakeup() before you can draw to the screen again.
     pub async fn sleep(&mut self) -> Result<()> {
         // We can't use send_with_data, because the data function will also wait_until_idle,
         // but after sending the deep sleep command, busy will not be cleared,

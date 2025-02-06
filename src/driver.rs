@@ -377,7 +377,10 @@ where
                 .await?;
             self.using_partial_mode = true;
         }
-        self.command_with_data(command::UPDATE_DISPLAY_CTRL2, &[flag::UNDOCUMENTED])
+        self.command_with_data(command::DISPLAY_UPDATE_CONTROL, &[0x00])
+            .await?;
+        self.data(&[0x00]).await?;
+        self.command_with_data(command::UPDATE_DISPLAY_CTRL2, &[0xfc])
             .await?;
         self.command(command::MASTER_ACTIVATE).await?;
         self.wait_until_idle().await;

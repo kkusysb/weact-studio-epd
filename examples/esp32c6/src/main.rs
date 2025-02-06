@@ -42,10 +42,10 @@ fn main() -> ! {
 
     let sclk = io.pins.gpio6;
     let mosi = io.pins.gpio7;
-    let cs = io.pins.gpio15;
-    let dc = io.pins.gpio21;
-    let rst = io.pins.gpio22;
-    let busy = io.pins.gpio23;
+    let cs = io.pins.gpio8;
+    let dc = io.pins.gpio9;
+    let rst = io.pins.gpio10;
+    let busy = io.pins.gpio20;
 
     let spi_bus = Spi::new(peripherals.SPI2, 100.kHz(), SpiMode::Mode0, &clocks).with_pins(
         Some(sclk),
@@ -77,7 +77,8 @@ fn main() -> ! {
     display.set_rotation(DisplayRotation::Rotate0);
     driver.init().unwrap();
 
-    let mut partial_display = DisplayBlackWhite::<64, 128, { buffer_len::<Color>(64, 128) }>::new();
+    let mut partial_display =
+        DisplayBlackWhite::<400, 128, { buffer_len::<Color>(400, 128) }>::new();
     partial_display.set_rotation(DisplayRotation::Rotate0);
 
     let style = MonoTextStyle::new(&PROFONT_24_POINT, Color::Black);
@@ -93,7 +94,7 @@ fn main() -> ! {
 
     log::info!("Sleeping for 5s...");
     driver.sleep().unwrap();
-    delay.delay(5_000.millis());
+    delay.delay(1_000.millis());
 
     let mut n: u8 = 0;
     loop {
@@ -104,7 +105,7 @@ fn main() -> ! {
         write!(string_buf, "Update {}!", n).unwrap();
         let _ = Text::with_text_style(
             &string_buf,
-            Point::new(128, 32),
+            Point::new(160, 32),
             style,
             TextStyleBuilder::new().alignment(Alignment::Right).build(),
         )
@@ -114,13 +115,14 @@ fn main() -> ! {
 
         driver.wake_up().unwrap();
         driver
-            .fast_partial_update(&partial_display, 56, 156)
+            .fast_partial_update(&partial_display, 0, 156)
             .unwrap();
-
-        n = n.wrapping_add(1); // Wrap from 0..255
 
         log::info!("Sleeping for 5s...");
         driver.sleep().unwrap();
-        delay.delay(5_000.millis());
+        let timesleep = 3_000; // + (n as u64 * 60_000);
+        delay.delay(timesleep.millis());
+
+        n = n.wrapping_add(1); // Wrap from 0..255
     }
 }

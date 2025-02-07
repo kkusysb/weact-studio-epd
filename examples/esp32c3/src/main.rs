@@ -42,10 +42,10 @@ fn main() -> ! {
 
     let sclk = io.pins.gpio6; //scl on 4.2 display
     let mosi = io.pins.gpio7; //sda
-    let cs = io.pins.gpio15;
-    let dc = io.pins.gpio21;
-    let rst = io.pins.gpio22;
-    let busy = io.pins.gpio23;
+    let cs = io.pins.gpio8; //cs
+    let dc = io.pins.gpio9; //d/c
+    let rst = io.pins.gpio10; //res
+    let busy = io.pins.gpio20; //busy
 
     let spi_bus = Spi::new(peripherals.SPI2, 100.kHz(), SpiMode::Mode0, &clocks).with_pins(
         Some(sclk),
